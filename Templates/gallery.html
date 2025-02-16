@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Image Gallery</title>
+</head>
+
+<body>
+    <h1>Image Gallery</h1>
+    <a href="{{ url_for('upload_image') }}">Upload New Image</a>
+    <div>
+        {% for image in images %}
+        <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
+        {% endfor %}
+    </div>
+</body>
+
+</html>
