@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Image Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
     <h1>Image Gallery</h1>
     <a href="{{ url_for('upload_image') }}">Upload New Image</a>
-    <div>
+    <div class="gallery">
         {% for image in images %}
-        <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}" width="200">
+        <img src="{{ url_for('static', filename='uploads/' + image) }}" alt="{{ image }}">
         {% endfor %}
     </div>
 </body>
