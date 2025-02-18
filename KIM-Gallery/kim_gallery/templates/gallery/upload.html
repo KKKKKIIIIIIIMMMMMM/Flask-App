@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="h3 mb-0">Upload Image</h1>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control") }}
+                            {% for error in form.title.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="4") }}
+                            {% for error in form.description.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.image.label(class="form-label") }}
+                            {{ form.image(class="form-control") }}
+                            {% for error in form.image.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                            <div class="form-text">
+                                Allowed file types: JPG, JPEG, PNG, GIF
+                                <br>
+                                Maximum file size: 16MB
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.tags.label(class="form-label") }}
+                            {{ form.tags(class="form-control") }}
+                            {% for error in form.tags.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                            <div class="form-text">
+                                Separate tags with commas (e.g., nature, landscape, sunset)
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Preview image before upload
+    document.getElementById('image').onchange = function (evt) {
+        const [file] = this.files;
+        if (file) {
+            const preview = document.createElement('img');
+            preview.src = URL.createObjectURL(file);
+            preview.style.maxWidth = '100%';
+            preview.style.marginTop = '10px';
+            preview.style.borderRadius = '4px';
+
+            const previewContainer = document.createElement('div');
+            previewContainer.id = 'preview-container';
+            previewContainer.appendChild(preview);
+
+            const existingPreview = document.getElementById('preview-container');
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+
+            this.parentElement.appendChild(previewContainer);
+        }
+    };
+</script>
+{% endblock %}

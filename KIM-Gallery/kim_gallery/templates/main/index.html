@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Welcome to KIM Gallery</h1>
+            <p class="lead">Discover and share beautiful images from around the world.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for image in images.items %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100">
+                <a href="{{ url_for('gallery.image', id=image.id) }}" class="text-decoration-none">
+                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="card-img-top"
+                        alt="{{ image.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">{{ image.title }}</h5>
+                        <p class="card-text text-muted">
+                            by {{ image.author.username }}
+                            <br>
+                            <small>{{ image.upload_date.strftime('%Y-%m-%d') }}</small>
+                        </p>
+                        {% if image.tags %}
+                        <div class="mt-2">
+                            {% for tag in image.tags %}
+                            <a href="{{ url_for('main.tag', name=tag.name) }}"
+                                class="badge bg-secondary text-decoration-none">
+                                {{ tag.name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if images.items %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if images.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.index', page=images.prev_num) }}">Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+            </li>
+            {% endif %}
+
+            {% for page_num in images.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+            {% if page_num %}
+            {% if page_num == images.page %}
+            <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.index', page=page_num) }}">{{ page_num }}</a>
+            </li>
+            {% endif %}
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if images.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('main.index', page=images.next_num) }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Next</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% else %}
+    <div class="text-center mt-5">
+        <p class="lead">No images found.</p>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload your first image</a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login to upload images</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

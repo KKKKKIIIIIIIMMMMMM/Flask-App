@@ -1,0 +1,145 @@
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Card Styles */
+.card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Image Grid */
+.card-img-top {
+    transition: opacity 0.2s;
+}
+
+.card:hover .card-img-top {
+    opacity: 0.9;
+}
+
+/* Tags */
+.badge {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.badge:hover {
+    background-color: #4a5568 !important;
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: #6c757d;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+.btn-primary {
+    background-color: #4a5568;
+    border-color: #4a5568;
+}
+
+.btn-primary:hover {
+    background-color: #2d3748;
+    border-color: #2d3748;
+}
+
+.btn-outline-primary {
+    color: #4a5568;
+    border-color: #4a5568;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4a5568;
+    border-color: #4a5568;
+}
+
+/* Navigation */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Image Detail Page */
+.image-detail img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Profile Page */
+.profile-header {
+    background-color: #fff;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar .form-inline {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    .profile-header {
+        text-align: center;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
