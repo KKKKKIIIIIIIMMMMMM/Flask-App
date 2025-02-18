@@ -1,6 +1,8 @@
-from app import create_app
+from app import create_app, db
+from app.models.user import User
+from app.models.image import Image, Tag
+from app.models.comment import Comment
 
 app = create_app()
-
-if __name__ == '__main__':
-    app.run(debug=True)
+with app.app_context():
+    db.create_all()

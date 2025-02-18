@@ -4,6 +4,7 @@ from app.models.image import Image, Tag
 from app.models.user import User
 from app import db
 from sqlalchemy import desc
+from app.models.comment import Comment
 
 bp = Blueprint('main', __name__)
 
@@ -94,3 +95,41 @@ def like_image(image_id):
             'likes': len(image.liked_by.all())
         })
     return redirect(url_for('images.view', image_id=image_id))
+
+from app.models.comment import Comment
+
+@bp.route('/image/<int:image_id>/comment', methods=['POST'])
+@login_required
+def add_comment(image_id):
+    image = Image.query.get_or_404(image_id)
+    content = request.form.get('content', '').strip()
+    
+    if content:
+        comment = Comment(
+            content=content,
+            user_id=current_user.id,
+            image_id=image_id
+        )
+        db.session.add(comment)
+        db.session.commit()
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(comment.to_dict())
+            
+    return redirect(url_for('images.view', image_id=image_id))
+
+@bp.route('/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.user_id != current_user.id:
+        flash('You cannot delete this comment')
+        return redirect(url_for('images.view', image_id=comment.image_id))
+        
+    db.session.delete(comment)
+    db.session.commit()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'status': 'success'})
+        
+    return redirect(url_for('images.view', image_id=comment.image_id))
