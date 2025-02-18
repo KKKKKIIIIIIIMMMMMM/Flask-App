@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
+<!-- Add this before the closing body tag -->
+<script src="{{ url_for('static', filename='js/likes.js') }}"></script>
+
 <body>
     <nav>
         <div class="nav-wrapper">
@@ -40,6 +43,7 @@
     <footer>
         <p>&copy; {{ year }} Cosmos Gallery. All rights reserved.</p>
     </footer>
+
 </body>
 
 </html>
