@@ -22,8 +22,12 @@ def upload():
             base, ext = os.path.splitext(filename)
             filename = f"{base}_{current_user.id}{ext}"
             
+            # Ensure upload directory exists
+            os.makedirs(current_app.config['UPLOAD_FOLDER'], exist_ok=True)
+            
             # Save the file
-            form.image.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            form.image.data.save(upload_path)
             
             # Create image record
             image = Image(
@@ -96,7 +100,9 @@ def delete_image(id):
     
     # Delete the file
     try:
-        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename))
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
     except Exception as e:
         flash(f'Error deleting image file: {str(e)}', 'error')
     

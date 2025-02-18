@@ -13,6 +13,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Upload settings
-    UPLOAD_FOLDER = basedir / 'cosmos_gallery' / 'static' / 'uploads'
+    UPLOAD_FOLDER = basedir / 'kim_gallery' / 'static' / 'uploads'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'} 
