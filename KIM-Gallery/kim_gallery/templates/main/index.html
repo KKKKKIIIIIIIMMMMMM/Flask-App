@@ -15,8 +15,10 @@
             <div class="card h-100">
                 <a href="{{ url_for('gallery.image', id=image.id) }}" class="text-decoration-none">
                     {% if image.filename.lower().endswith('.mp4') %}
-                    <div class="position-relative">
-                        <video class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="video-preview position-relative">
+                        <video class="card-img-top preview-video" muted loop playsinline
+                            style="height: 200px; object-fit: cover;"
+                            poster="{{ url_for('static', filename='uploads/' + image.filename) }}">
                             <source src="{{ url_for('static', filename='uploads/' + image.filename) }}"
                                 type="video/mp4">
                         </video>
@@ -108,6 +110,45 @@
     {% endif %}
 </div>
 
-<!-- Add Bootstrap Icons for video icon -->
+<!-- Add Bootstrap Icons and custom styles -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+<style>
+    .video-preview {
+        overflow: hidden;
+    }
+
+    .video-preview:hover .preview-video {
+        transform: scale(1.05);
+    }
+
+    .preview-video {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .preview-video {
+        transform: scale(1.05);
+    }
+</style>
+
+<!-- Video preview script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoCards = document.querySelectorAll('.video-preview');
+
+        videoCards.forEach(card => {
+            const video = card.querySelector('video');
+
+            // Start playing automatically
+            video.currentTime = 0; // Reset to start
+            video.play();
+
+
+            // Load metadata to get video duration
+            video.addEventListener('loadedmetadata', () => {
+                // Set playback rate to show more of the video in preview
+                video.playbackRate = 1.1;
+            });
+        });
+    });
+</script>
 {% endblock %}
