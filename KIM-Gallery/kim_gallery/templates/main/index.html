@@ -2,50 +2,45 @@
 
 {% block content %}
 <div class="container">
-    <div class="row mb-4">
+    <div class="row mb-5">
         <div class="col">
-            <h1 class="display-4">Welcome to KIM Gallery</h1>
-            <p class="lead">Discover and share beautiful images and videos from around the world.</p>
+            <h1 class="display-2 fw-normal mb-3">Welcome to KIM Gallery</h1>
+            <p class="lead text-secondary">Discover and share beautiful images and videos from around the world.</p>
         </div>
     </div>
 
     <div class="row g-4">
         {% for image in images.items %}
         <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100">
+            <div class="position-relative image-card">
                 <a href="{{ url_for('gallery.image', id=image.id) }}" class="text-decoration-none">
                     {% if image.filename.lower().endswith('.mp4') %}
-                    <div class="video-preview position-relative">
-                        <video class="card-img-top preview-video" muted loop playsinline
-                            style="height: 200px; object-fit: cover;"
+                    <div class="media-container">
+                        <video class="media-item" muted loop playsinline
                             poster="{{ url_for('static', filename='uploads/' + image.filename) }}">
                             <source src="{{ url_for('static', filename='uploads/' + image.filename) }}"
                                 type="video/mp4">
                         </video>
-                        <div class="position-absolute top-0 end-0 p-2">
-                            <span class="badge bg-dark">
-                                <i class="bi bi-play-fill"></i> Video
-                            </span>
-                        </div>
+                        <span class="video-badge">
+                            <i class="bi bi-play-fill"></i> Video
+                        </span>
                     </div>
                     {% else %}
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="card-img-top"
-                        alt="{{ image.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="media-container">
+                        <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="media-item"
+                            alt="{{ image.title }}">
+                    </div>
                     {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title text-dark">{{ image.title }}</h5>
-                        <p class="card-text text-muted">
-                            by {{ image.author.username }}
-                            <br>
-                            <small>{{ image.upload_date.strftime('%Y-%m-%d') }}</small>
-                        </p>
+                    <div class="media-info">
+                        <h5 class="media-title">{{ image.title }}</h5>
+                        <div class="media-meta">
+                            <span>by {{ image.author.username }}</span>
+                            <span>{{ image.upload_date.strftime('%Y-%m-%d') }}</span>
+                        </div>
                         {% if image.tags %}
-                        <div class="mt-2">
+                        <div class="media-tags">
                             {% for tag in image.tags %}
-                            <a href="{{ url_for('main.tag', name=tag.name) }}"
-                                class="badge bg-secondary text-decoration-none">
-                                {{ tag.name }}
-                            </a>
+                            <span class="tag">{{ tag.name }}</span>
                             {% endfor %}
                         </div>
                         {% endif %}
@@ -57,7 +52,7 @@
     </div>
 
     {% if images.items %}
-    <nav class="mt-4">
+    <nav class="mt-5">
         <ul class="pagination justify-content-center">
             {% if images.has_prev %}
             <li class="page-item">
@@ -100,7 +95,7 @@
     </nav>
     {% else %}
     <div class="text-center mt-5">
-        <p class="lead">No media found.</p>
+        <p class="lead text-secondary">No media found.</p>
         {% if current_user.is_authenticated %}
         <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload your first media</a>
         {% else %}
@@ -110,43 +105,109 @@
     {% endif %}
 </div>
 
-<!-- Add Bootstrap Icons and custom styles -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 <style>
-    .video-preview {
+    .image-card {
+        background: var(--dark-surface);
+        border-radius: 8px;
         overflow: hidden;
-    }
-
-    .video-preview:hover .preview-video {
-        transform: scale(1.05);
-    }
-
-    .preview-video {
         transition: transform 0.3s ease;
     }
 
-    .card:hover .preview-video {
+    .image-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .media-container {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+        background: var(--dark-surface-2);
+    }
+
+    .media-item {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .media-info {
+        padding: 12px;
+    }
+
+    .media-title {
+        font-size: 1rem;
+        margin: 0;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .media-meta {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .media-tags {
+        margin-top: 8px;
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        background: var(--dark-surface-2);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    /* Video hover effect */
+    .media-container video {
+        transition: transform 0.3s ease;
+    }
+
+    .image-card:hover .media-container video {
         transform: scale(1.05);
     }
 </style>
 
-<!-- Video preview script -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const videoCards = document.querySelectorAll('.video-preview');
+        const videoCards = document.querySelectorAll('.image-card');
 
         videoCards.forEach(card => {
             const video = card.querySelector('video');
+            if (!video) return;
 
-            // Start playing automatically
-            video.currentTime = 0; // Reset to start
+            // Play video automatically when the card is loaded
             video.play();
 
+            card.addEventListener('', () => {
+                video.play();
+            });
 
-            // Load metadata to get video duration
-            video.addEventListener('loadedmetadata', () => {
-                // Set playback rate to show more of the video in preview
-                video.playbackRate = 1.1;
+            card.addEventListener('', () => {
+                video.pause();
+                video.currentTime = 0;
             });
         });
     });
