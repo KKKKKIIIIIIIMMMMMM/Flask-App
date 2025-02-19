@@ -7,9 +7,9 @@ from kim_gallery import db
 class UploadForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Description', validators=[Length(max=500)])
-    image = FileField('Image', validators=[
+    image = FileField('Image or Video', validators=[
         FileRequired(),
-        FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Images only!')
+        FileAllowed(['jpg', 'jpeg', 'png', 'gif', 'mp4'], 'Images and MP4 videos only!')
     ])
     tags = StringField('Tags (comma separated)', validators=[Length(max=200)])
     submit = SubmitField('Upload')

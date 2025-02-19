@@ -14,7 +14,7 @@ class Config:
     
     # Upload settings
     UPLOAD_FOLDER = basedir / 'kim_gallery' / 'static' / 'uploads'
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'} 
+    MAX_CONTENT_LENGTH = 32 * 1024 * 1024  # 32MB max file size for videos
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4'}
 
 
