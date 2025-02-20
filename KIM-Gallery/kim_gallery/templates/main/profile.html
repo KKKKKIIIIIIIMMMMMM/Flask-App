@@ -18,26 +18,38 @@
             </div>
         </div>
         <div class="col-md-8">
-            <h3>{{ user.username }}'s Images</h3>
+            <h3>{{ user.username }}'s Media</h3>
             <div class="row g-4">
                 {% for image in images.items %}
                 <div class="col-sm-6 col-md-4">
-                    <div class="card h-100">
+                    <div class="position-relative image-card">
                         <a href="{{ url_for('gallery.image', id=image.id) }}" class="text-decoration-none">
-                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}"
-                                class="card-img-top" alt="{{ image.title }}" style="height: 200px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title text-dark">{{ image.title }}</h5>
-                                <p class="card-text text-muted">
-                                    <small>{{ image.upload_date.strftime('%Y-%m-%d') }}</small>
-                                </p>
+                            {% if image.filename.lower().endswith('.mp4') %}
+                            <div class="media-container">
+                                <video class="media-item" muted loop playsinline
+                                    poster="{{ url_for('static', filename='uploads/' + image.filename) }}">
+                                    <source src="{{ url_for('static', filename='uploads/' + image.filename) }}"
+                                        type="video/mp4">
+                                </video>
+                                <span class="video-badge">
+                                    <i class="bi bi-play-fill"></i> Video
+                                </span>
+                            </div>
+                            {% else %}
+                            <div class="media-container">
+                                <img src="{{ url_for('static', filename='uploads/' + image.filename) }}"
+                                    class="media-item" alt="{{ image.title }}">
+                            </div>
+                            {% endif %}
+                            <div class="media-info">
+                                <h5 class="media-title">{{ image.title }}</h5>
+                                <div class="media-meta">
+                                    <span>{{ image.upload_date.strftime('%Y-%m-%d') }}</span>
+                                </div>
                                 {% if image.tags %}
-                                <div class="mt-2">
+                                <div class="media-tags">
                                     {% for tag in image.tags %}
-                                    <a href="{{ url_for('main.tag', name=tag.name) }}"
-                                        class="badge bg-secondary text-decoration-none">
-                                        {{ tag.name }}
-                                    </a>
+                                    <span class="tag">{{ tag.name }}</span>
                                     {% endfor %}
                                 </div>
                                 {% endif %}
@@ -49,7 +61,7 @@
             </div>
 
             {% if images.items %}
-            <nav class="mt-4">
+            <nav class="mt-5">
                 <ul class="pagination justify-content-center">
                     {% if images.has_prev %}
                     <li class="page-item">
@@ -96,13 +108,118 @@
             </nav>
             {% else %}
             <div class="text-center mt-5">
-                <p class="lead">No images found.</p>
+                <p class="lead text-secondary">No media found.</p>
                 {% if user == current_user %}
-                <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload your first image</a>
+                <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload your first media</a>
                 {% endif %}
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<style>
+    .image-card {
+        background: var(--dark-surface);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .image-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .media-container {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+        background: var(--dark-surface-2);
+    }
+
+    .media-item {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .media-info {
+        padding: 12px;
+    }
+
+    .media-title {
+        font-size: 1rem;
+        margin: 0;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .media-meta {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .media-tags {
+        margin-top: 8px;
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        background: var(--dark-surface-2);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    /* Video hover effect */
+    .media-container video {
+        transition: transform 0.3s ease;
+    }
+
+    .image-card:hover .media-container video {
+        transform: scale(1.05);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoCards = document.querySelectorAll('.image-card');
+
+        videoCards.forEach(card => {
+            const video = card.querySelector('video');
+            if (!video) return;
+
+            card.addEventListener('mouseenter', () => {
+                video.play();
+            });
+
+            card.addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+        });
+    });
+</script>
 {% endblock %}

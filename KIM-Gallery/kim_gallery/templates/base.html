@@ -31,9 +31,26 @@
         }
 
         .navbar-brand {
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin-right: 2rem;
+            font-size: 1.25rem;
             font-weight: 600;
+            letter-spacing: 0.5px;
             color: var(--text-primary) !important;
+            text-decoration: none;
+        }
+
+        .navbar-brand:hover {
+            color: var(--text-primary) !important;
+            opacity: 0.9;
+        }
+
+        .navbar-logo {
+            height: 24px;
+            width: auto;
+            display: block;
         }
 
         .search-container {
@@ -254,7 +271,9 @@
             <div class="d-flex align-items-center w-100">
                 <!-- Left section -->
                 <div class="d-flex align-items-center">
-                    <a class="navbar-brand me-4" href="{{ url_for('main.index') }}">LOGO</a>
+                    <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                        KIM Gallery
+                    </a>
                     <a class="nav-link me-3" href="{{ url_for('main.about') }}">about</a>
                     <a class="nav-link" href="{{ url_for('main.contact') }}">contact</a>
                 </div>
@@ -264,14 +283,6 @@
                     <form class="search-container" action="{{ url_for('main.search') }}" method="get">
                         <input type="text" class="form-control search-input" name="q" placeholder="Search"
                             value="{{ request.args.get('q', '') }}">
-                        <div class="search-options">
-                            <button type="button" class="search-option-btn" title="Advanced search">
-                                <i class="bi bi-gear-fill"></i>
-                            </button>
-                            <button type="button" class="search-option-btn" title="Search settings">
-                                <i class="bi bi-sliders"></i>
-                            </button>
-                        </div>
                         <button type="submit" class="search-option-btn search-icon">
                             <i class="bi bi-search"></i>
                         </button>
