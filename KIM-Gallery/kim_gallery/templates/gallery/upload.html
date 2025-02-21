@@ -4,56 +4,58 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card upload-card">
                 <div class="card-header">
-                    <h1 class="h3 mb-0">Upload Image</h1>
+                    <h1 class="h3 mb-0">Upload Media</h1>
                 </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
 
-                        <div class="mb-3">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control") }}
-                            {% for error in form.title.errors %}
-                            <span class="text-danger">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.description.label(class="form-label") }}
-                            {{ form.description(class="form-control", rows="4") }}
-                            {% for error in form.description.errors %}
-                            <span class="text-danger">{{ error }}</span>
-                            {% endfor %}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.image.label(class="form-label") }}
-                            {{ form.image(class="form-control") }}
+                        <div class="upload-section mb-4">
+                            <div class="upload-area" id="upload-area">
+                                <input type="file" class="file-input" name="image" id="image"
+                                    accept=".jpg,.jpeg,.png,.gif,.mp4" hidden>
+                                <div class="upload-content text-center">
+                                    <i class="bi bi-cloud-upload display-4 mb-3"></i>
+                                    <h3 class="upload-title">Drop your media here</h3>
+                                    <p class="upload-text">or click to browse</p>
+                                    <p class="upload-info">Supports: JPG, PNG, GIF, MP4 (max 32MB)</p>
+                                </div>
+                            </div>
                             {% for error in form.image.errors %}
-                            <span class="text-danger">{{ error }}</span>
+                            <div class="error-message">{{ error }}</div>
                             {% endfor %}
-                            <div class="form-text">
-                                Allowed file types: JPG, JPEG, PNG, GIF
-                                <br>
-                                Maximum file size: 16MB
-                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            {{ form.tags.label(class="form-label") }}
-                            {{ form.tags(class="form-control") }}
-                            {% for error in form.tags.errors %}
-                            <span class="text-danger">{{ error }}</span>
+                        <div class="form-group mb-3">
+                            {{ form.title.label(class="form-label") }}
+                            {{ form.title(class="form-control", placeholder="Enter a title for your media") }}
+                            {% for error in form.title.errors %}
+                            <div class="error-message">{{ error }}</div>
                             {% endfor %}
-                            <div class="form-text">
-                                Separate tags with commas (e.g., nature, landscape, sunset)
-                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="4", placeholder="Add a description
+                            (optional)") }}
+                            {% for error in form.description.errors %}
+                            <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            {{ form.tags.label(class="form-label") }}
+                            {{ form.tags(class="form-control", placeholder="nature, photography, art") }}
+                            {% for error in form.tags.errors %}
+                            <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                            <div class="form-text">Separate tags with commas</div>
                         </div>
 
                         <div class="d-grid">
-                            {{ form.submit(class="btn btn-primary") }}
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
                         </div>
                     </form>
                 </div>
@@ -62,28 +64,169 @@
     </div>
 </div>
 
+<style>
+    .upload-card {
+        background: var(--dark-surface);
+        border: 1px solid var(--dark-surface-3);
+        border-radius: 8px;
+    }
+
+    .upload-section {
+        position: relative;
+    }
+
+    .upload-area {
+        border: 2px dashed var(--dark-surface-3);
+        border-radius: 8px;
+        padding: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--dark-surface-2);
+    }
+
+    .upload-area:hover {
+        border-color: var(--accent-color);
+        background: var(--dark-surface);
+    }
+
+    .upload-area.dragover {
+        border-color: var(--accent-color);
+        background: var(--dark-surface);
+    }
+
+    .upload-content {
+        color: var(--text-secondary);
+    }
+
+    .upload-content i {
+        color: var(--text-muted);
+    }
+
+    .upload-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .upload-text {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-info {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .form-label {
+        color: var(--text-primary);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        background-color: var(--dark-surface-2);
+        border: 1px solid var(--dark-surface-3);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: var(--dark-surface-2);
+        border-color: var(--accent-color);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+    .form-text {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: var(--accent-color);
+        border: none;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--accent-hover);
+        transform: translateY(-1px);
+    }
+</style>
+
 <script>
-    // Preview image before upload
-    document.getElementById('image').onchange = function (evt) {
-        const [file] = this.files;
-        if (file) {
-            const preview = document.createElement('img');
-            preview.src = URL.createObjectURL(file);
-            preview.style.maxWidth = '100%';
-            preview.style.marginTop = '10px';
-            preview.style.borderRadius = '4px';
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('image');
 
-            const previewContainer = document.createElement('div');
-            previewContainer.id = 'preview-container';
-            previewContainer.appendChild(preview);
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-            const existingPreview = document.getElementById('preview-container');
-            if (existingPreview) {
-                existingPreview.remove();
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                const fileSize = (fileInput.files[0].size / (1024 * 1024)).toFixed(2);
+                document.querySelector('.upload-title').textContent = fileName;
+                document.querySelector('.upload-text').textContent = `${fileSize} MB`;
             }
+        });
 
-            this.parentElement.appendChild(previewContainer);
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-    };
+
+        function highlight(e) {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+
+            if (files.length > 0) {
+                const fileName = files[0].name;
+                const fileSize = (files[0].size / (1024 * 1024)).toFixed(2);
+                document.querySelector('.upload-title').textContent = fileName;
+                document.querySelector('.upload-text').textContent = `${fileSize} MB`;
+            }
+        }
+    });
 </script>
 {% endblock %}
