@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length, Email, ValidationError
 from kim_gallery.models import User
@@ -7,6 +8,9 @@ class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
     about_me = TextAreaField('About me', validators=[Length(max=500)])
+    profile_image = FileField('Profile Picture', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png'], 'Images only!')
+    ])
     submit = SubmitField('Save Changes')
 
     def __init__(self, original_username, original_email, *args, **kwargs):

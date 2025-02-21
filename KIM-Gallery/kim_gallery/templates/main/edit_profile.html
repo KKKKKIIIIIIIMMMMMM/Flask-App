@@ -9,30 +9,58 @@
                     <h1 class="h3 mb-0">Edit Profile</h1>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="">
+                    <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
+
+                        <div class="text-center mb-4">
+                            <div class="profile-image-container">
+                                <div class="profile-image-wrapper">
+                                    {% if current_user.profile_image %}
+                                    <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_image) }}"
+                                        class="profile-image" id="profile-preview" alt="Profile Picture"
+                                        onerror="this.src='{{ url_for('static', filename='images/default-avatar.png') }}'">
+                                    {% else %}
+                                    <div class="profile-placeholder">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="profile-image-overlay">
+                                    <i class="bi bi-camera-fill"></i>
+                                    <span>Change Photo</span>
+                                </div>
+                            </div>
+                            {{ form.profile_image(class="profile-image-input", accept="image/*") }}
+                            {% for error in form.profile_image.errors %}
+                            <div class="error-message">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
                         <div class="mb-3">
                             {{ form.username.label(class="form-label") }}
                             {{ form.username(class="form-control") }}
                             {% for error in form.username.errors %}
-                            <span class="text-danger">{{ error }}</span>
+                            <div class="error-message">{{ error }}</div>
                             {% endfor %}
                         </div>
+
                         <div class="mb-3">
                             {{ form.email.label(class="form-label") }}
                             {{ form.email(class="form-control") }}
                             {% for error in form.email.errors %}
-                            <span class="text-danger">{{ error }}</span>
+                            <div class="error-message">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        <div class="mb-3">
+
+                        <div class="mb-4">
                             {{ form.about_me.label(class="form-label") }}
                             {{ form.about_me(class="form-control", rows="4") }}
                             {% for error in form.about_me.errors %}
-                            <span class="text-danger">{{ error }}</span>
+                            <div class="error-message">{{ error }}</div>
                             {% endfor %}
                             <div class="form-text">Tell us about yourself (optional)</div>
                         </div>
+
                         <div class="d-grid">
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
@@ -42,4 +70,119 @@
         </div>
     </div>
 </div>
+
+<style>
+    .profile-image-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        background-color: var(--dark-surface-2);
+    }
+
+    .profile-image-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: filter 0.3s ease;
+    }
+
+    .profile-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-size: 4rem;
+    }
+
+    .profile-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .profile-image-overlay i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-image-container:hover .profile-image,
+    .profile-image-container:hover .profile-placeholder {
+        filter: blur(2px);
+    }
+
+    .profile-image-container:hover .profile-image-overlay {
+        opacity: 1;
+    }
+
+    .profile-image-input {
+        display: none;
+    }
+
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const profileContainer = document.querySelector('.profile-image-container');
+        const profileInput = document.querySelector('.profile-image-input');
+        const profilePreview = document.getElementById('profile-preview');
+
+        profileContainer.addEventListener('click', () => {
+            profileInput.click();
+        });
+
+        profileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    if (profilePreview) {
+                        profilePreview.src = e.target.result;
+                    } else {
+                        // Create new image element if it doesn't exist
+                        const newImage = document.createElement('img');
+                        newImage.src = e.target.result;
+                        newImage.id = 'profile-preview';
+                        newImage.className = 'profile-image';
+                        newImage.alt = 'Profile Picture';
+
+                        const wrapper = document.querySelector('.profile-image-wrapper');
+                        wrapper.innerHTML = '';
+                        wrapper.appendChild(newImage);
+                    }
+                }
+
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    });
+</script>
 {% endblock %}
