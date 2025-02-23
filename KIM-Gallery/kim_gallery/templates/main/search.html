@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="search-container mb-4">
+        <form action="{{ url_for('main.search') }}" method="get" class="search-form">
+            <div class="search-header">
+                <h1 class="h3 mb-4">Search Results{% if query %} for "{{ query }}"{% endif %}</h1>
+                <div class="search-filters">
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="type" id="all" value="all" {% if not search_type or
+                            search_type=='all' %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="all">All</label>
+
+                        <input type="radio" class="btn-check" name="type" id="images" value="images" {% if
+                            search_type=='images' %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="images">Images</label>
+
+                        <input type="radio" class="btn-check" name="type" id="users" value="users" {% if
+                            search_type=='users' %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="users">Users</label>
+
+                        <input type="radio" class="btn-check" name="type" id="tags" value="tags" {% if
+                            search_type=='tags' %}checked{% endif %}>
+                        <label class="btn btn-outline-primary" for="tags">Tags</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-box mb-4">
+                <input type="text" name="q" class="form-control search-input" value="{{ query }}"
+                    placeholder="Search for images, users, or tags...">
+                <button type="submit" class="btn btn-primary search-btn">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+
+        {% if query %}
+        {% if matching_users %}
+        <div class="matching-users mb-4">
+            <h3 class="h5 mb-3">Matching Users</h3>
+            <div class="user-suggestions">
+                {% for user in matching_users %}
+                <a href="{{ url_for('main.profile', username=user.username) }}" class="user-suggestion">
+                    <div class="user-avatar">
+                        {% if user.profile_image %}
+                        <img src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }}"
+                            alt="{{ user.username }}'s avatar">
+                        {% else %}
+                        <i class="bi bi-person-fill"></i>
+                        {% endif %}
+                    </div>
+                    <span class="username">{{ user.username }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if related_tags %}
+        <div class="related-tags mb-4">
+            <h3 class="h5 mb-3">Related Tags</h3>
+            <div class="tags-container">
+                {% for tag in related_tags %}
+                <a href="{{ url_for('main.search', q=tag.name, type='tags') }}" class="tag">
+                    #{{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="search-results">
+        {% if images.items %}
+        <div class="row g-4">
+            {% for image in images.items %}
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="position-relative image-card">
+                    <a href="{{ url_for('gallery.image', id=image.id) }}" class="text-decoration-none">
+                        {% if image.filename.lower().endswith('.mp4') %}
+                        <div class="media-container">
+                            <video class="media-item" muted loop playsinline>
+                                <source src="{{ url_for('static', filename='uploads/' + image.filename) }}"
+                                    type="video/mp4">
+                            </video>
+                            <span class="video-badge">
+                                <i class="bi bi-play-fill"></i> Video
+                            </span>
+                        </div>
+                        {% else %}
+                        <div class="media-container">
+                            <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" class="media-item"
+                                alt="{{ image.title }}">
+                        </div>
+                        {% endif %}
+                        <div class="media-info">
+                            <h5 class="media-title">{{ image.title }}</h5>
+                            <div class="media-meta">
+                                <span>by {{ image.author.username }}</span>
+                                <span>{{ image.upload_date.strftime('%Y-%m-%d') }}</span>
+                            </div>
+                            {% if image.tags %}
+                            <div class="media-tags">
+                                {% for tag in image.tags %}
+                                <span class="tag">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if images.has_prev %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="{{ url_for('main.search', q=query, type=search_type, page=images.prev_num) }}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+                {% endif %}
+
+                {% for page_num in images.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                {% if page_num %}
+                {% if page_num == images.page %}
+                <li class="page-item active">
+                    <span class="page-link">{{ page_num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="{{ url_for('main.search', q=query, type=search_type, page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if images.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="{{ url_for('main.search', q=query, type=search_type, page=images.next_num) }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% else %}
+        <div class="text-center mt-5">
+            <p class="lead text-secondary">No results found{% if query %} for "{{ query }}"{% endif %}.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .search-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .search-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .search-box {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .search-input {
+        padding-right: 50px;
+    }
+
+    .search-btn {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-group {
+        background: var(--dark-surface-2);
+        padding: 4px;
+        border-radius: 8px;
+    }
+
+    .btn-outline-primary {
+        color: var(--text-secondary);
+        border-color: transparent;
+    }
+
+    .btn-outline-primary:hover {
+        color: var(--text-primary);
+        background-color: var(--dark-surface-3);
+        border-color: transparent;
+    }
+
+    .btn-check:checked+.btn-outline-primary {
+        background-color: var(--accent-color);
+        color: white;
+        border-color: transparent;
+    }
+
+    .matching-users {
+        background: var(--dark-surface-2);
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .user-suggestions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .user-suggestion {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: var(--dark-surface-3);
+        border-radius: 25px;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .user-suggestion:hover {
+        transform: translateY(-2px);
+        background: var(--dark-surface);
+        color: var(--accent-color);
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: var(--dark-surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .user-avatar i {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+    }
+
+    .related-tags {
+        background: var(--dark-surface-2);
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .tags-container {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        background: var(--dark-surface-3);
+        color: var(--text-secondary);
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .tag:hover {
+        background: var(--dark-surface);
+        color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+
+    .image-card {
+        background: var(--dark-surface-2);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .image-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .media-container {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+    }
+
+    .media-item {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .media-info {
+        padding: 1rem;
+    }
+
+    .media-title {
+        font-size: 1rem;
+        margin: 0;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .media-meta {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .media-tags {
+        margin-top: 0.5rem;
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .media-tags .tag {
+        font-size: 0.75rem;
+        padding: 2px 6px;
+    }
+
+    @media (max-width: 768px) {
+        .search-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-filters {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .btn-group {
+            width: 100%;
+            display: flex;
+        }
+
+        .btn-group label {
+            flex: 1;
+            text-align: center;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const videoCards = document.querySelectorAll('.image-card');
+
+        videoCards.forEach(card => {
+            const video = card.querySelector('video');
+            if (!video) return;
+
+            card.addEventListener('mouseenter', () => {
+                video.play();
+            });
+
+            card.addEventListener('mouseleave', () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+        });
+    });
+</script>
+{% endblock %}

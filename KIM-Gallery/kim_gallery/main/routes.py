@@ -148,17 +148,54 @@ KIM Gallery Team
 def search():
     query = request.args.get('q', '')
     page = request.args.get('page', 1, type=int)
+    search_type = request.args.get('type', 'all')  # all, images, users, tags
     
     if query:
-        images = Image.query.filter(
-            (Image.title.ilike(f'%{query}%')) |
-            (Image.description.ilike(f'%{query}%'))
-        ).order_by(Image.upload_date.desc()).paginate(
+        # Base query for images
+        image_query = Image.query.join(User, Image.user_id == User.id)\
+            .outerjoin(image_tags)\
+            .outerjoin(Tag)
+
+        if search_type == 'images' or search_type == 'all':
+            # Search in image titles and descriptions
+            images = image_query.filter(
+                db.or_(
+                    Image.title.ilike(f'%{query}%'),
+                    Image.description.ilike(f'%{query}%'),
+                    User.username.ilike(f'%{query}%'),
+                    Tag.name.ilike(f'%{query}%')
+                )
+            ).distinct()
+        elif search_type == 'users':
+            # Search for users
+            images = image_query.filter(User.username.ilike(f'%{query}%'))
+        elif search_type == 'tags':
+            # Search for tags
+            images = image_query.filter(Tag.name.ilike(f'%{query}%'))
+        
+        # Order and paginate results
+        images = images.order_by(Image.upload_date.desc()).paginate(
             page=page, per_page=12, error_out=False)
+        
+        # Get related tags for search suggestions
+        related_tags = Tag.query.filter(Tag.name.ilike(f'%{query}%')).limit(5).all()
+        
+        # Get matching users for search suggestions
+        matching_users = User.query.filter(User.username.ilike(f'%{query}%')).limit(5).all()
     else:
         images = Image.query.none().paginate(page=page, per_page=12, error_out=False)
+        related_tags = []
+        matching_users = []
     
-    return render_template('main/search.html', title='Search', images=images, query=query)
+    return render_template(
+        'main/search.html',
+        title='Search',
+        images=images,
+        query=query,
+        search_type=search_type,
+        related_tags=related_tags,
+        matching_users=matching_users
+    )
 
 @bp.route('/tag/<name>')
 def tag(name):
