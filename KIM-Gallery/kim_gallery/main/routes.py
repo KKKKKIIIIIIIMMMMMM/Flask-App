@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from kim_gallery.main import bp
-from kim_gallery.models import Image, Tag, User, Contact
+from kim_gallery.models import Image, Tag, User, Contact, image_tags
 from kim_gallery import db
 from kim_gallery.main.forms import EditProfileForm, ContactForm
 from datetime import datetime
@@ -152,9 +152,7 @@ def search():
     
     if query:
         # Base query for images
-        image_query = Image.query.join(User, Image.user_id == User.id)\
-            .outerjoin(image_tags)\
-            .outerjoin(Tag)
+        image_query = Image.query.join(User, Image.user_id == User.id)
 
         if search_type == 'images' or search_type == 'all':
             # Search in image titles and descriptions
@@ -162,16 +160,25 @@ def search():
                 db.or_(
                     Image.title.ilike(f'%{query}%'),
                     Image.description.ilike(f'%{query}%'),
-                    User.username.ilike(f'%{query}%'),
-                    Tag.name.ilike(f'%{query}%')
+                    User.username.ilike(f'%{query}%')
                 )
-            ).distinct()
+            )
+            # Add tag search if there are any matching tags
+            matching_tags = Tag.query.filter(Tag.name.ilike(f'%{query}%')).all()
+            if matching_tags:
+                tag_images = Image.query.join(image_tags).join(Tag).filter(
+                    Tag.id.in_([tag.id for tag in matching_tags])
+                )
+                images = images.union(tag_images)
         elif search_type == 'users':
             # Search for users
             images = image_query.filter(User.username.ilike(f'%{query}%'))
         elif search_type == 'tags':
             # Search for tags
-            images = image_query.filter(Tag.name.ilike(f'%{query}%'))
+            tag_images = Image.query.join(image_tags).join(Tag).filter(
+                Tag.name.ilike(f'%{query}%')
+            )
+            images = tag_images
         
         # Order and paginate results
         images = images.order_by(Image.upload_date.desc()).paginate(
