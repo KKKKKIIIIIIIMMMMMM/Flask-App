@@ -3,10 +3,12 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from kim_gallery.main import bp
-from kim_gallery.models import Image, Tag, User
+from kim_gallery.models import Image, Tag, User, Contact
 from kim_gallery import db
-from kim_gallery.main.forms import EditProfileForm
+from kim_gallery.main.forms import EditProfileForm, ContactForm
 from datetime import datetime
+from flask_mail import Message
+from kim_gallery import mail
 
 def save_profile_picture(form_picture):
     if form_picture:
@@ -85,9 +87,62 @@ def edit_profile():
 def about():
     return render_template('main/about.html', title='About')
 
-@bp.route('/contact')
+@bp.route('/contact', methods=['GET', 'POST'])
 def contact():
-    return render_template('main/contact.html', title='Contact')
+    form = ContactForm()
+    if form.validate_on_submit():
+        contact = Contact(
+            name=form.name.data,
+            email=form.email.data,
+            subject=form.subject.data,
+            message=form.message.data,
+            user_id=current_user.id if current_user.is_authenticated else None
+        )
+        db.session.add(contact)
+        
+        try:
+            # Send email notification to admin
+            msg = Message(
+                subject=f'New Contact Form Submission: {form.subject.data}',
+                sender=current_app.config['MAIL_DEFAULT_SENDER'],
+                recipients=[current_app.config['ADMIN_EMAIL']],
+                body=f'''New contact form submission from {form.name.data} ({form.email.data}):
+
+Subject: {form.subject.data}
+
+Message:
+{form.message.data}
+
+Submitted at: {datetime.utcnow()}
+'''
+            )
+            mail.send(msg)
+            
+            # Send confirmation email to user
+            user_msg = Message(
+                subject='Thank you for contacting KIM Gallery',
+                sender=current_app.config['MAIL_DEFAULT_SENDER'],
+                recipients=[form.email.data],
+                body=f'''Dear {form.name.data},
+
+Thank you for contacting KIM Gallery. We have received your message and will get back to you as soon as possible.
+
+Best regards,
+KIM Gallery Team
+'''
+            )
+            mail.send(user_msg)
+            
+            db.session.commit()
+            flash('Your message has been sent successfully! We will get back to you soon.', 'success')
+            return redirect(url_for('main.contact'))
+            
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f'Error sending contact form: {str(e)}')
+            flash('An error occurred while sending your message. Please try again later.', 'error')
+    
+    return render_template('main/contact.html', title='Contact Us', form=form)
 
 @bp.route('/search')
 def search():

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="contact-header text-center mb-5">
+                <h1 class="display-4 mb-3">Contact Us</h1>
+                <p class="lead">Have questions or feedback? We'd love to hear from you.</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="contact-info">
+                            <h3 class="h4 mb-4">Get in Touch</h3>
+                            <div class="info-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p>support@kimgallery.com</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <h4>Response Time</h4>
+                                    <p>Within 24-48 hours</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i class="bi bi-shield-check"></i>
+                                <div>
+                                    <h4>Support</h4>
+                                    <p>24/7 online support</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <form method="POST" class="contact-form">
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                                {% for error in form.name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.subject.label(class="form-label") }}
+                                {{ form.subject(class="form-control" + (" is-invalid" if form.subject.errors else ""))
+                                }}
+                                {% for error in form.subject.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form.message.label(class="form-label") }}
+                                {{ form.message(class="form-control" + (" is-invalid" if form.message.errors else ""),
+                                rows="5") }}
+                                {% for error in form.message.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="d-grid">
+                                {{ form.submit(class="btn btn-primary btn-lg") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-header {
+        color: var(--text-primary);
+    }
+
+    .contact-header .lead {
+        color: var(--text-secondary);
+    }
+
+    .contact-card {
+        background: var(--dark-surface-2);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    .contact-info {
+        color: var(--text-primary);
+        padding-right: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item i {
+        font-size: 1.5rem;
+        color: var(--accent-color);
+        margin-top: 0.25rem;
+    }
+
+    .info-item h4 {
+        font-size: 1rem;
+        margin: 0 0 0.25rem;
+        color: var(--text-primary);
+    }
+
+    .info-item p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .contact-form {
+        background: var(--dark-surface);
+        padding: 2rem;
+        border-radius: 8px;
+    }
+
+    .form-label {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .form-control {
+        background-color: var(--dark-surface-2);
+        border: 1px solid var(--dark-surface-3);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: var(--dark-surface-2);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+    .invalid-feedback {
+        color: var(--danger-color);
+    }
+
+    .btn-primary {
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .contact-info {
+            padding-right: 0;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--dark-surface-3);
+        }
+
+        .contact-form {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}

@@ -45,4 +45,17 @@ class Tag(db.Model):
 image_tags = db.Table('image_tags',
     db.Column('image_id', db.Integer, db.ForeignKey('image.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
-) 
+)
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    status = db.Column(db.String(20), default='unread')  # unread, read, replied
+
+    def __repr__(self):
+        return f'<Contact {self.email}>' 
