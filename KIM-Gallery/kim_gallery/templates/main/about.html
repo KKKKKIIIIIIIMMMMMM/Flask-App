@@ -4,134 +4,137 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card">
-                <div class="card-body">
-                    <h1 class="display-4 mb-4">About KIM Gallery</h1>
+            <h1 class="display-4 mb-4">About KIM Gallery</h1>
 
-                    <div class="about-section mb-5">
-                        <h2 class="h3 mb-3">Welcome to KIM Gallery</h2>
-                        <p class="lead">A modern platform for sharing and discovering amazing images and videos.</p>
-                        <p>KIM Gallery is a community-driven platform where creators can share their visual content with
-                            the world. Whether you're a photographer, videographer, or digital artist, our platform
-                            provides the perfect space to showcase your work.</p>
-                    </div>
+            <div class="about-section mb-5">
+                <h2 class="h3 mb-3">Welcome to KIM Gallery</h2>
+                <p class="lead">A modern platform for sharing and discovering amazing images and videos.</p>
+                <p>KIM Gallery is a community-driven platform where creators can share their visual content with
+                    the world. Whether you're a photographer, videographer, or digital artist, our platform
+                    provides the perfect space to showcase your work.</p>
+            </div>
 
-                    <div class="features-section mb-5">
-                        <h2 class="h3 mb-4">Key Features</h2>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-image"></i>
-                                    </div>
-                                    <h3 class="h5">Image Support</h3>
-                                    <p>Upload and share high-quality images in various formats including JPG, PNG, and
-                                        GIF.</p>
-                                </div>
+            <div class="features-section mb-5">
+                <h2 class="h3 mb-4">Key Features</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-image"></i>
                             </div>
-                            <div class="col-md-6">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-camera-video"></i>
-                                    </div>
-                                    <h3 class="h5">Video Support</h3>
-                                    <p>Share your video content with MP4 support and interactive video player features.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-tags"></i>
-                                    </div>
-                                    <h3 class="h5">Content Organization</h3>
-                                    <p>Organize your content with tags and descriptions for easy discovery.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <h3 class="h5">User Profiles</h3>
-                                    <p>Customize your profile, showcase your work, and connect with other creators.</p>
-                                </div>
-                            </div>
+                            <h3 class="h5">Image Support</h3>
+                            <p>Upload and share high-quality images in various formats including JPG, PNG, and
+                                GIF.</p>
                         </div>
                     </div>
-
-                    <div class="tech-section mb-5">
-                        <h2 class="h3 mb-3">Technology Stack</h2>
-                        <p>KIM Gallery is built with modern technologies to ensure a fast, secure, and reliable
-                            experience:</p>
-                        <ul class="tech-list">
-                            <li>Flask - Python web framework</li>
-                            <li>SQLAlchemy - Database ORM</li>
-                            <li>Bootstrap - Frontend framework</li>
-                            <li>HTML5 Video - Native video playback</li>
-                        </ul>
-                    </div>
-
-                    <div class="cta-section text-center">
-                        <h2 class="h3 mb-4">Join Our Community</h2>
-                        <p class="mb-4">Start sharing your creative work with the world today.</p>
-                        {% if not current_user.is_authenticated %}
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
-                            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Login</a>
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-camera-video"></i>
+                            </div>
+                            <h3 class="h5">Video Support</h3>
+                            <p>Share your video content with MP4 support and interactive video player features.</p>
                         </div>
-                        {% else %}
-                        <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload Media</a>
-                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-tags"></i>
+                            </div>
+                            <h3 class="h5">Content Organization</h3>
+                            <p>Organize your content with tags and descriptions for easy discovery.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <h3 class="h5">User Profiles</h3>
+                            <p>Customize your profile, showcase your work, and connect with other creators.</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="tech-section mb-5">
+                <h2 class="h3 mb-3">Technology Stack</h2>
+                <p>KIM Gallery is built with modern technologies to ensure a fast, secure, and reliable experience:</p>
+                <ul class="tech-list">
+                    <li>Flask - Python web framework</li>
+                    <li>SQLAlchemy - Database ORM</li>
+                    <li>Bootstrap - Frontend framework</li>
+                    <li>HTML5 Video - Native video playback</li>
+                </ul>
+            </div>
+
+            <div class="cta-section text-center">
+                <h2 class="h3 mb-4">Join Our Community</h2>
+                <p class="mb-4">Start sharing your creative work with the world today.</p>
+                {% if not current_user.is_authenticated %}
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary">Login</a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('gallery.upload') }}" class="btn btn-primary">Upload Media</a>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
 <style>
+    .display-4 {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
     .about-section {
         color: var(--text-primary);
     }
 
     .lead {
         color: var(--text-secondary);
+        font-size: 1.25rem;
     }
 
     .feature-card {
         background: var(--dark-surface-2);
-        border-radius: 8px;
-        padding: 1.5rem;
+        border-radius: 12px;
+        padding: 1.75rem;
         height: 100%;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, background-color 0.3s ease;
     }
 
     .feature-card:hover {
         transform: translateY(-4px);
+        background: var(--dark-surface-3);
     }
 
     .feature-icon {
-        font-size: 2rem;
+        font-size: 2.5rem;
         color: var(--accent-color);
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
     }
 
     .feature-card h3 {
         color: var(--text-primary);
         margin-bottom: 0.75rem;
+        font-weight: 600;
     }
 
     .feature-card p {
         color: var(--text-secondary);
         margin: 0;
         font-size: 0.95rem;
+        line-height: 1.5;
     }
 
     .tech-list {
         list-style: none;
         padding: 0;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 1rem;
@@ -140,26 +143,51 @@
     .tech-list li {
         background: var(--dark-surface-2);
         color: var(--text-secondary);
-        padding: 0.75rem 1rem;
-        border-radius: 4px;
+        padding: 1rem 1.25rem;
+        border-radius: 8px;
         font-size: 0.95rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .tech-list li:hover {
+        background: var(--dark-surface-3);
     }
 
     .cta-section {
         background: var(--dark-surface-2);
-        border-radius: 8px;
-        padding: 2rem;
-        margin-top: 3rem;
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        margin-top: 4rem;
+    }
+
+    .cta-section h2 {
+        color: var(--text-primary);
+    }
+
+    .cta-section p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
     }
 
     .btn-outline-primary {
         border-color: var(--accent-color);
         color: var(--accent-color);
+        padding: 0.5rem 1.5rem;
     }
 
     .btn-outline-primary:hover {
         background-color: var(--accent-color);
         color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
     }
 </style>
 {% endblock %}
