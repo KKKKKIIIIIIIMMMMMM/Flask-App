@@ -2,7 +2,7 @@
 name = "kim-gallery"
 version = "0.1.0"
 description = "A Flask-based image gallery website"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["KIM <hakeemmwh2@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
